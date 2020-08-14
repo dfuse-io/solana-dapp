@@ -21,7 +21,11 @@ const HomePageBase: React.FC = () => {
   }
 
   if(!state) {
-    return null
+    return (
+			<Box my={4} display="flex" flexDirection="column" alignItems="center">
+				<Alert severity="warning">Solana wallet extension is NOT detected! First make sure it is installed.</Alert>
+			</Box>
+		)
   }
 
 
@@ -38,7 +42,6 @@ const HomePageBase: React.FC = () => {
       return (
         <Box my={4} display="flex" flexDirection="column" alignItems="center" >
           <Alert severity="warning">Solana wallet is locked!</Alert>
-
         </Box>
       )
     case "unlocked":
