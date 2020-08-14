@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useSolana } from "../context/solana"
-import {
-  AccountInfo,
-  Connection,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  SystemProgram,
-  Transaction,
-  TransactionInstruction
-} from "@solana/web3.js"
+import { Connection, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js"
 import { Buffer } from "buffer"
 import { GenericTransfer } from "./generic-transfer"
 // @ts-ignore FIXME We need to add a mock definition of this library to the overall project
@@ -39,7 +31,7 @@ export const SPLTransfer: React.FC = () => {
     if(owner && connection) {
       getOwnedAccounts(owner, connection)
     }
-  }, [owner])
+  }, [owner, connection])
 
 
   useEffect(() => {
@@ -76,7 +68,7 @@ export const SPLTransfer: React.FC = () => {
     );
     let b = Buffer.alloc(instructionMaxSpan);
     let span = bufferLayout.encode({
-      transfer: {amount: amount * Math.pow(10, 9)}
+      transfer: {amount: amount * Math.pow(10, 2)}
     }, b);
     const encodedData = b.slice(0, span);
     const transaction = new Transaction()
@@ -89,9 +81,10 @@ export const SPLTransfer: React.FC = () => {
       data: encodedData,
       programId: tokenProgramId,
     }))
+    console.log("transaction: ", transaction.instructions[0])
+    console.log("buff: ", encodedData.toString("hex"))
     return transaction
   }
-
 
   if (!accounts || !connection) {
     return null

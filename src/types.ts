@@ -5,6 +5,7 @@
 export type Network   = {
   title: string
   endpoint: string
+  cluster: string
 }
 
 

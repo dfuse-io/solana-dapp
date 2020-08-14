@@ -34,7 +34,7 @@ export const TransferForm: React.FC<TransferProps> = ({ froms, onTransfer }) => 
 
   const canSubmit = (): boolean => {
     const amt = parseFloat(amount)
-    if (from && (from != "") && to && (to != "") && (amt >= 0)) {
+    if (from && (from !== "") && to && (to !== "") && (amt >= 0)) {
       return true
     }
     return false

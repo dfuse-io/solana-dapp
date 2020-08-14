@@ -1,12 +1,14 @@
 import React, { useState } from "react"
-import { PublicKey, Transaction } from "@solana/web3.js"
+import { PublicKey, Transaction, TransactionSignature } from "@solana/web3.js"
 import Alert from "@material-ui/lab/Alert"
 // @ts-ignore
 import bs58 from "bs58"
-import { Card, CardContent, Chip, Grid, List, ListItem, ListItemText } from "@material-ui/core"
+import { Card, CardContent, Chip, Grid, Link, List, ListItem, ListItemText } from "@material-ui/core"
 import { useSolana } from "../context/solana"
 import { truncate } from "../utils"
 import { TransferForm } from "./transfer-form"
+import Button from "@material-ui/core/Button"
+import Box from "@material-ui/core/Box"
 
 
 interface GenericTransferProp {
@@ -19,9 +21,9 @@ interface GenericTransferProp {
 export const GenericTransfer: React.FC<GenericTransferProp> = ({ froms, createTransaction, getSigner }) => {
   const { connection, signTransaction, network } = useSolana()
   const [error, setError] = useState()
-  const [status, setStatus] = useState()
-  const [confirmation, setConfirmation] = useState()
-  const [signature, setSignature] = useState()
+  const [status, setStatus] = useState<string>()
+  const [confirmation, setConfirmation] = useState<string>()
+  const [signature, setSignature] = useState<TransactionSignature>()
 
   if (!connection) {
     return null
@@ -35,9 +37,6 @@ export const GenericTransfer: React.FC<GenericTransferProp> = ({ froms, createTr
 
   const transfer = (from: string, to: string, amount: number): Promise<void> => {
     reset()
-
-    const fromPubKey = new PublicKey(from)
-
     return new Promise((resolve, reject) => {
       const transaction = createTransaction(from, to, amount)
       if(!transaction) {
@@ -105,13 +104,15 @@ export const GenericTransfer: React.FC<GenericTransferProp> = ({ froms, createTr
                 <ListItemText primary="Status"/> {status}
               </ListItem>
               <ListItem>
-                <ListItemText primary="First signature"/> {
-                signature &&
-                <a target="_blank"
-                   href={"https://explorer.solana.com/tx/" + signature + "?cluster=" + network?.endpoint}>
-                  {truncate(signature, 20)}
-                </a>
-              }
+                <ListItemText primary="First signature"/>
+                {
+                  signature &&
+                  <Link target="_blank" href={"https://explorer.solana.com/tx/" + signature + "?cluster=" + network?.cluster}>
+                    <Button variant="contained" color="primary">
+                      View on explorer
+                    </Button>
+                  </Link>
+                }
               </ListItem>
               <ListItem>
                 <ListItemText primary="Confirmation Slot"/>
