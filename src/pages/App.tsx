@@ -6,6 +6,9 @@ import Box from "@material-ui/core/Box"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import { ThemeProvider } from "@material-ui/core/styles"
 import { createMuiTheme } from "@material-ui/core/styles"
+import { NavigationFrame } from "../components/navigation"
+import { SolanaContext, SolanaProvider } from "../context/solana"
+import { HomePage } from "./home"
 // import ProTip from "./ProTip"
 
 export const App: React.FC = () => {
@@ -17,7 +20,7 @@ export const App: React.FC = () => {
         contrastText: "#fff",
       },
       secondary: {
-        main: "#86b8b6",
+        main: "rgb(220, 0, 78)",
         contrastText: "#fff",
       },
       success: {
@@ -35,39 +38,14 @@ export const App: React.FC = () => {
     },
   })
 
-  function login() {
-    // @ts-ignore
-    window.solana
-      .request({
-        method: "wallet_requestAccounts",
-      })
-      .then((resp: any) => {
-        if (resp.err) {
-          console.log("error", resp.err)
-          return
-        }
-
-        console.log("got accounts:", resp.result.accounts)
-      })
-      .catch((err: any) => {
-        console.log("promised returned err: ", err)
-      })
-  }
-
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-
-      <Container maxWidth="sm">
-        <Box my={4} display="flex" flexDirection="column" alignItems="center">
-          <Typography color="primary" variant="h4" component="h1" align="center" gutterBottom>
-            Welcome to MegaDapp
-          </Typography>
-          <Button variant="contained" color="primary" onClick={login}>
-            Login
-          </Button>
-        </Box>
-      </Container>
+      <SolanaProvider>
+        <CssBaseline />
+        <NavigationFrame>
+          <HomePage />
+        </NavigationFrame>
+      </SolanaProvider>
     </ThemeProvider>
   )
 }
