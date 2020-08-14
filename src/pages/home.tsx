@@ -23,6 +23,7 @@ const HomePageBase: React.FC = () => {
 				<Alert severity="warning">Solana wallet extension is NOT detected! First make sure it is installed.</Alert>
 			</Box>
 		)
+	}
 
   switch (state.state) {
     case "uninitialized":
