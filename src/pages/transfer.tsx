@@ -1,5 +1,5 @@
 import React from "react"
-import { Paper, Tab, Tabs, AppBar, Theme } from "@material-ui/core"
+import { Tab, Tabs, AppBar, Theme } from "@material-ui/core"
 import { SolTransfer } from "../components/sol-transfer"
 import { SPLTransfer } from "../components/spl-transfer"
 import { DexTransfer } from "../components/dex-transfer"

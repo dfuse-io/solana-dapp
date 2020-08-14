@@ -1,11 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 import { Network, WalletActions, WalletState } from "../types"
 import { Connection } from "@solana/web3.js"
 
 interface SolanaContextType {
   requestAccounts: () => Promise<string[]>
   signTransaction: (message: string, signer: string) => Promise<any>
-  connection: (Connection| undefined)
+  connection: (Connection | undefined)
   state: (WalletState | undefined)
   network: (Network | undefined)
   accounts: (string[] | undefined)
@@ -19,18 +19,6 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
   const [network, setNetwork] = useState<Network>()
   const [accounts, setAccounts] = useState<string[]>()
   const [connection, setConnection] = useState<Connection>()
-
-  const solanaCallbox = useCallback(
-    () => {
-      // @ts-ignore
-      console.log("sol: ", window.solana)
-    },
-    [
-      // @ts-ignore
-      window.solana
-    ],
-  );
-
 
   const onStateChanged = (state: WalletState) => {
     console.log("dapp onStateChanged:", state)
@@ -73,21 +61,21 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
 
 
   // TODO: we need better typing
-  const signTransaction = (message: string, signer: string):Promise<any> => {
+  const signTransaction = (message: string, signer: string): Promise<any> => {
     console.log("message ", message)
     return new Promise<string>(function(resolve, reject) {
       request("wallet_signTransaction", {
         message: message,
         signer: signer
       }).then(resp => {
-         resolve(resp)
+        resolve(resp)
       }).catch(e => {
         reject(e)
       })
     })
   }
 
-  const requestAccounts = ():Promise<string[]> => {
+  const requestAccounts = (): Promise<string[]> => {
     return new Promise<string[]>(function(resolve, reject) {
       request("wallet_requestAccounts", {})
         .then(resp => {
@@ -95,7 +83,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
           onAccountChange(accounts)
           resolve(accounts)
         }).catch(e => {
-          reject(e)
+        reject(e)
       })
     })
   }
@@ -115,14 +103,13 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     }
     return () => {
       if (listenning) {
-        window.removeEventListener("solana#initialized",() => {})
+        window.removeEventListener("solana#initialized", () => {
+        })
       }
     }
   }, [])
 
   useEffect(() => {
-    // @ts-ignore
-    solana = window.solana
     if (!solana) {
       console.log("solana not yet initialized: ")
       return
@@ -136,7 +123,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     requestState()
   }, [
     // @ts-ignore
-    solana
+    solana,
   ])
 
 
@@ -170,6 +157,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     </SolanaContext.Provider>
   )
 }
+
 export function useSolana() {
   const context = useContext(SolanaContext)
   if (!context) {
