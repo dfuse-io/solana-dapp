@@ -12,33 +12,33 @@ export const App: React.FC = () => {
     palette: {
       primary: {
         main: "#25c2a0",
-        contrastText: "#fff"
+        contrastText: "#fff",
       },
       secondary: {
-        main: "rgb(220, 0, 78)",
-        contrastText: "#fff"
+        main: "#fff",
+        contrastText: "#000",
       },
       success: {
         main: "#25c2a0",
-        contrastText: "#fff"
+        contrastText: "#fff",
       },
       info: {
         main: "#43b5c5",
-        contrastText: "#fff"
+        contrastText: "#fff",
       },
       error: {
         main: "#fa62fc",
-        contrastText: "#fff"
-      }
-    }
+        contrastText: "#fff",
+      },
+    },
   })
 
   return (
     <ThemeProvider theme={theme}>
       <SolanaProvider>
-        <CssBaseline/>
+        <CssBaseline />
         <NavigationFrame>
-          <HomePage/>
+          <HomePage />
         </NavigationFrame>
       </SolanaProvider>
     </ThemeProvider>

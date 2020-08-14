@@ -5,25 +5,27 @@ import Box from "@material-ui/core/Box"
 import { TransferPage } from "./transfer"
 import Alert from "@material-ui/lab/Alert"
 
-
 const HomePageBase: React.FC = () => {
   const { state, accounts, requestAccounts } = useSolana()
   const handleConnectClick = () => {
-    requestAccounts().then(accounts => {
-      console.log("got accounts:", accounts)
-    })
+    requestAccounts()
+      .then((accounts) => {
+        console.log("got accounts:", accounts)
+      })
       .catch((err: any) => {
         console.log("promised returned err: ", err)
       })
   }
 
-  if(!state) {
+  if (!state) {
     return (
-			<Box my={4} display="flex" flexDirection="column" alignItems="center">
-				<Alert severity="warning">Solana wallet extension is NOT detected! First make sure it is installed.</Alert>
-			</Box>
-		)
-	}
+      <Box my={4} display="flex" flexDirection="column" alignItems="center">
+        <Alert severity="warning">
+          Solana wallet extension is NOT detected! First make sure it is installed.
+        </Alert>
+      </Box>
+    )
+  }
 
   switch (state.state) {
     case "uninitialized":
@@ -46,18 +48,17 @@ const HomePageBase: React.FC = () => {
           <Box my={4} display="flex" flexDirection="column" alignItems="center">
             <Alert severity="warning">Make sure you authorized the application</Alert>
             <Button variant="contained" color="primary" onClick={handleConnectClick}>
-              Authorized Application
+              Authorize Application
             </Button>
           </Box>
         )
       }
       return (
         <Box my={4} display="flex" flexDirection="column" alignItems="center">
-          <TransferPage/>
+          <TransferPage />
         </Box>
       )
   }
-
 }
 
 export const HomePage = HomePageBase
