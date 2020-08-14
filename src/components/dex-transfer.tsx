@@ -91,7 +91,7 @@ export const DexTransfer: React.FC = () => {
       return
     }
 
-    let marketAddress = new PublicKey('...');
+    let marketAddress = new PublicKey("9jghpuDjUjKe6s1sX6kukuNcWAcHFD4cRzApF7UQTCuW");
     let market = await Market.load(connection, marketAddress);
     const { transaction, signers } = await market.makePlaceOrderTransaction<PublicKey>(connection, {
       owner: ownerKey,
