@@ -4,7 +4,7 @@ import { Connection } from "@solana/web3.js"
 
 interface SolanaContextType {
   requestAccounts: () => Promise<string[]>
-  signTransaction: (message: string, signer: string) => Promise<any>
+  signTransaction: (message: string, signers: string[]) => Promise<any>
   connection: (Connection | undefined)
   state: (WalletState | undefined)
   network: (Network | undefined)
@@ -61,12 +61,12 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
 
 
   // TODO: we need better typing
-  const signTransaction = (message: string, signer: string): Promise<any> => {
+  const signTransaction = (message: string, signers: string[]): Promise<any> => {
     console.log("message ", message)
     return new Promise<string>(function(resolve, reject) {
       request("wallet_signTransaction", {
         message: message,
-        signer: signer
+        signer: signers
       }).then(resp => {
         resolve(resp)
       }).catch(e => {

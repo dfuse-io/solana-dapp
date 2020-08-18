@@ -1,14 +1,14 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Button,
   Card,
-  CardContent,
+  CardContent, Divider,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField, Typography
 } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { Market } from '@project-serum/serum';
@@ -16,6 +16,8 @@ import { Connection, PublicKey } from "@solana/web3.js"
 import { useSolana } from "../context/solana"
 // @ts-ignore
 import bs58 from "bs58"
+import { Buffer } from "buffer"
+import { DEX_PROGRAM_ID, INSTRUCTION_LAYOUT } from "@project-serum/serum/lib/instructions"
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -52,6 +54,25 @@ export const DexTransfer: React.FC = () => {
   const [orderType, setOrderType] = useState<OrderType>("limit")
   const [size, setSize] = useState<number>(0)
   const [price, setPrice] = useState<number>(0)
+  const [market, setMarket] = useState<Market>()
+
+  console.log("DexTransfer")
+
+  useEffect(() => {
+    console.log("loading market")
+    let marketAddress = new PublicKey("9jghpuDjUjKe6s1sX6kukuNcWAcHFD4cRzApF7UQTCuW");
+    if (connection) {
+      Market.load(connection, marketAddress).then(m => {
+        console.log("setting market")
+        setMarket(m)
+      })
+    }
+  }, [connection])
+
+  useEffect(() => {
+    console.log("loaded market: ", market)
+  }, [market])
+
 
   const handleOwnerChange = (event: any) => {
     setOwner(event.target.value)
@@ -87,12 +108,13 @@ export const DexTransfer: React.FC = () => {
   }
 
   const placeOrder = async(ownerKey: PublicKey, payerKey: PublicKey) => {
-    if (!connection) {
+    if (!connection || !market) {
       return
     }
 
-    let marketAddress = new PublicKey("9jghpuDjUjKe6s1sX6kukuNcWAcHFD4cRzApF7UQTCuW");
-    let market = await Market.load(connection, marketAddress);
+    // let marketAddress = new PublicKey("9jghpuDjUjKe6s1sX6kukuNcWAcHFD4cRzApF7UQTCuW");
+    // let market = await Market.load(connection, marketAddress);
+    console.log("loaded market: ", market)
     const { transaction, signers } = await market.makePlaceOrderTransaction<PublicKey>(connection, {
       owner: ownerKey,
       payer: payerKey,
@@ -106,8 +128,17 @@ export const DexTransfer: React.FC = () => {
     connection.getRecentBlockhash("max").then(rep => {
       transaction.recentBlockhash = rep.blockhash
       console.log("Waiting for authorization")
-      signTransaction(bs58.encode(transaction.serializeMessage()), ownerKey.toBase58()).then(data => {
-        console.log("Waiting for signature")
+
+      const signersPublicKeys: string[] = []
+      signers.forEach(accountOrPublicKey => {
+        if ('publicKey' in accountOrPublicKey) {
+          signersPublicKeys.push(accountOrPublicKey.publicKey.toBase58())
+        }
+        signersPublicKeys.push((accountOrPublicKey as PublicKey).toBase58())
+      })
+
+      signTransaction(bs58.encode(transaction.serializeMessage()), signersPublicKeys).then(data => {
+        console.log("Got auth for signature:", data.result.signature)
         transaction.addSignature(ownerKey, bs58.decode(data.result.signature))
         console.log("Sending Transaction")
         connection.sendRawTransaction(transaction.serialize()).then(signature => {
@@ -124,7 +155,7 @@ export const DexTransfer: React.FC = () => {
             console.log("Err: ", err)
           })
         }).catch(err => {
-          console.log("Err: ", err)
+          console.log("Send transaction Err: ", err)
         })
       }).catch(err => {
         console.log("Err: ", err)
@@ -140,6 +171,20 @@ export const DexTransfer: React.FC = () => {
     <Card>
       <CardContent>
         <Grid container>
+          <Grid item xs={6} className={classes.section}>
+            <h3>Market</h3>
+            <Typography variant={"subtitle1"}>Address:</Typography>
+            <Typography variant={"body1"}>{market?market.address.toBase58():""}</Typography>
+            <Divider/>
+            <br/>
+            <Typography variant={"subtitle1"}>quoted Mint:</Typography>
+            <Typography variant={"body1"}>{market?market.quoteMintAddress.toBase58():""}</Typography>
+            <Divider/>
+            <br/>
+            <Typography variant={"subtitle1"}>base Mint:</Typography>
+            <Typography variant={"body1"}>{market?market.baseMintAddress.toBase58():""}</Typography>
+            <Divider/>
+          </Grid>
           <Grid item xs={6} className={classes.section}>
             <h3>Place and order</h3>
             <Grid item xs={12} className={classes.form}>

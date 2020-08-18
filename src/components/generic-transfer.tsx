@@ -49,9 +49,13 @@ export const GenericTransfer: React.FC<GenericTransferProp> = ({ froms, createTr
       connection.getRecentBlockhash("max").then(rep => {
         transaction.recentBlockhash = rep.blockhash
         setStatus("Waiting for authorization")
-        signTransaction(bs58.encode(transaction.serializeMessage()), signer).then(data => {
+        signTransaction(bs58.encode(transaction.serializeMessage()), [signer]).then(data => {
           setStatus("Waiting for signature")
-          transaction.addSignature(signerPubKey, bs58.decode(data.result.signature))
+
+          data.result.signatures.forEach((signature: any) => {
+            transaction.addSignature(signerPubKey, bs58.decode(signature))
+          })
+
           setStatus("Sending Transaction")
           connection.sendRawTransaction(transaction.serialize()).then(signature => {
             setSignature(signature)
