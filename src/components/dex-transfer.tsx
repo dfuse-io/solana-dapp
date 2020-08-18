@@ -134,7 +134,7 @@ export const DexTransfer: React.FC = () => {
 
       signers.forEach(accountOrPublicKey => {
         if ('secretKey' in accountOrPublicKey) {
-          transaction.signPartial(accountOrPublicKey as Account)
+          transaction.addSigner(accountOrPublicKey as Account)
         } else {
           signersPublicKeys.push((accountOrPublicKey as PublicKey).toBase58())
         }
@@ -148,7 +148,12 @@ export const DexTransfer: React.FC = () => {
           transaction.addSignature(new PublicKey(signatureResult.publicKey), bs58.decode(signatureResult.signature))
         })
 
-        console.log("Sending Transaction")
+        console.log("Sending Transaction: ", transaction)
+
+        transaction.signatures.forEach((s, i )=> {
+          console.log("signature ["+i+"]: ", s.publicKey.toBase58(), s.signature?.toString)
+        })
+
         connection.sendRawTransaction(transaction.serialize()).then(signature => {
           console.log(signature)
           console.log("Waiting confirmation")

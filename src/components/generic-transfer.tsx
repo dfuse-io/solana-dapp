@@ -53,6 +53,7 @@ export const GenericTransfer: React.FC<GenericTransferProp> = ({ froms, createTr
           setStatus("Waiting for signature")
 
           data.result.signatureResults.forEach((signatureResult: any) => {
+            console.log("about to add signature: " + signatureResult.signature,  " for pub key: " + new PublicKey(signatureResult.publicKey).toBase58())
             transaction.addSignature(new PublicKey(signatureResult.publicKey), bs58.decode(signatureResult.signature))
           })
 
