@@ -12,12 +12,13 @@ import {
 } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { Market } from '@project-serum/serum';
-import { Connection, PublicKey } from "@solana/web3.js"
+import { Connection, PublicKey, Account } from "@solana/web3.js"
 import { useSolana } from "../context/solana"
 // @ts-ignore
 import bs58 from "bs58"
 import { Buffer } from "buffer"
 import { DEX_PROGRAM_ID, INSTRUCTION_LAYOUT } from "@project-serum/serum/lib/instructions"
+import { DexOrderList } from "./dex-order-list"
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -130,16 +131,23 @@ export const DexTransfer: React.FC = () => {
       console.log("Waiting for authorization")
 
       const signersPublicKeys: string[] = []
+
       signers.forEach(accountOrPublicKey => {
-        if ('publicKey' in accountOrPublicKey) {
-          signersPublicKeys.push(accountOrPublicKey.publicKey.toBase58())
+        if ('secretKey' in accountOrPublicKey) {
+          transaction.signPartial(accountOrPublicKey as Account)
+        } else {
+          signersPublicKeys.push((accountOrPublicKey as PublicKey).toBase58())
         }
-        signersPublicKeys.push((accountOrPublicKey as PublicKey).toBase58())
       })
 
+      //todo: check that we have 2 signature
       signTransaction(bs58.encode(transaction.serializeMessage()), signersPublicKeys).then(data => {
-        console.log("Got auth for signature:", data.result.signature)
-        transaction.addSignature(ownerKey, bs58.decode(data.result.signature))
+
+        data.result.signatureResults.forEach((signatureResult: any) => {
+          console.log("Got auth for signature :", signatureResult)
+          transaction.addSignature(new PublicKey(signatureResult.publicKey), bs58.decode(signatureResult.signature))
+        })
+
         console.log("Sending Transaction")
         connection.sendRawTransaction(transaction.serialize()).then(signature => {
           console.log(signature)
@@ -262,6 +270,7 @@ export const DexTransfer: React.FC = () => {
             </Grid>
           </Grid>
           <Grid item xs={6} className={classes.section}>
+            <DexOrderList market={market} owner={owner}/>
           </Grid>
         </Grid>
       </CardContent>
