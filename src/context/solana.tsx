@@ -161,7 +161,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
 export function useSolana() {
   const context = useContext(SolanaContext)
   if (!context) {
-    throw new Error("Solana not found, must be used within the SolanaProvicer")
+    throw new Error("Solana not found, must be used within the SolanaProvider")
   }
   return context
 }
