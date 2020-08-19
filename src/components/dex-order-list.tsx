@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Card, CardContent, Grid, List, ListItem, ListItemText } from "@material-ui/core"
 import { Market, OpenOrders } from "@project-serum/serum"
 import { makeStyles } from "@material-ui/core/styles"
-import { AccountInfo, PublicKey } from "@solana/web3.js"
+import { PublicKey } from "@solana/web3.js"
 import { useSolana } from "../context/solana"
-import { on } from "cluster"
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -14,15 +13,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-
 interface OrderListProp {
   market: Market | undefined
   owner: string | undefined
 }
 
-
 export const DexOrderList: React.FC<OrderListProp> = ({ market, owner }) => {
-  const { connection} = useSolana()
+  const { connection } = useSolana()
   const classes = useStyles()
   const [openOrders, setOpenOrders] = useState<OpenOrders[]>([])
 
@@ -30,7 +27,7 @@ export const DexOrderList: React.FC<OrderListProp> = ({ market, owner }) => {
     return <p>nada</p>
   }
 
-  market.findOpenOrdersAccountsForOwner(connection, new PublicKey(owner)).then(orders => {
+  market.findOpenOrdersAccountsForOwner(connection, new PublicKey(owner)).then((orders) => {
     setOpenOrders(orders)
   })
 
@@ -43,7 +40,7 @@ export const DexOrderList: React.FC<OrderListProp> = ({ market, owner }) => {
             <p>{market.address.toBase58()}</p>
             <List disablePadding>
               {openOrders.map((order) => (
-                <DexOrderListItem openOrders={order}  />
+                <DexOrderListItem openOrders={order} />
               ))}
             </List>
           </Grid>

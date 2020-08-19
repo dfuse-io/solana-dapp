@@ -5,10 +5,10 @@ import { Connection } from "@solana/web3.js"
 interface SolanaContextType {
   requestAccounts: () => Promise<string[]>
   signTransaction: (message: string, signers: string[]) => Promise<any>
-  connection: (Connection | undefined)
-  state: (WalletState | undefined)
-  network: (Network | undefined)
-  accounts: (string[] | undefined)
+  connection: Connection | undefined
+  state: WalletState | undefined
+  network: Network | undefined
+  accounts: string[] | undefined
 }
 
 export const SolanaContext = createContext<SolanaContextType | null>(null)
@@ -42,49 +42,48 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     setAccounts(acts)
   }
 
-
   const requestState = () => {
-    request("wallet_getState", {})
-      .then(resp => {
-        console.log("requestState response: ", resp)
-        onStateChanged(resp.result)
-      })
+    request("wallet_getState", {}).then((resp) => {
+      console.log("requestState response: ", resp)
+      onStateChanged(resp.result)
+    })
   }
 
   const requestCluster = () => {
-    request("wallet_getCluster", {})
-      .then(resp => {
-        console.log("requestCluster response: ", resp)
-        onClusterChange(resp.result)
-      })
+    request("wallet_getCluster", {}).then((resp) => {
+      console.log("requestCluster response: ", resp)
+      onClusterChange(resp.result)
+    })
   }
-
 
   // TODO: we need better typing
   const signTransaction = (message: string, signers: string[]): Promise<any> => {
     console.log("message ", message)
-    return new Promise<string>(function(resolve, reject) {
+    return new Promise<string>(function (resolve, reject) {
       request("wallet_signTransaction", {
         message: message,
-        signer: signers
-      }).then(resp => {
-        resolve(resp)
-      }).catch(e => {
-        reject(e)
+        signer: signers,
       })
+        .then((resp) => {
+          resolve(resp)
+        })
+        .catch((e) => {
+          reject(e)
+        })
     })
   }
 
   const requestAccounts = (): Promise<string[]> => {
-    return new Promise<string[]>(function(resolve, reject) {
+    return new Promise<string[]>(function (resolve, reject) {
       request("wallet_requestAccounts", {})
-        .then(resp => {
+        .then((resp) => {
           const accounts = resp.result.accounts
           onAccountChange(accounts)
           resolve(accounts)
-        }).catch(e => {
-        reject(e)
-      })
+        })
+        .catch((e) => {
+          reject(e)
+        })
     })
   }
 
@@ -96,15 +95,14 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
       setSolana(window.solana)
     } else {
       listenning = true
-      window.addEventListener("solana#initialized", function(event) {
+      window.addEventListener("solana#initialized", function (event) {
         // @ts-ignore
         setSolana(window.solana)
       })
     }
     return () => {
       if (listenning) {
-        window.removeEventListener("solana#initialized", () => {
-        })
+        window.removeEventListener("solana#initialized", () => {})
       }
     }
   }, [])
@@ -118,27 +116,26 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     solana.on("accountsChanged", onAccountChange)
     solana.on("stateChanged", onStateChanged)
     solana.on("clusterChanged", onClusterChange)
-    // @ts-ignore
 
     requestState()
-  }, [
-    // @ts-ignore
-    solana,
-  ])
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [solana])
 
   const request = (method: WalletActions, params: any): Promise<any> => {
-    return new Promise<any>(function(resolve, reject) {
-      solana.request({
-        method: method,
-        params: params
-      }).then((resp: any) => {
-        console.log("resp: ", resp)
-        resolve(resp)
-      }).catch((err: any) => {
-        console.log("err: ", err)
-        reject(err)
-      })
+    return new Promise<any>(function (resolve, reject) {
+      solana
+        .request({
+          method: method,
+          params: params,
+        })
+        .then((resp: any) => {
+          console.log("resp: ", resp)
+          resolve(resp)
+        })
+        .catch((err: any) => {
+          console.log("err: ", err)
+          reject(err)
+        })
     })
   }
 
@@ -150,7 +147,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
         state,
         network,
         accounts,
-        connection
+        connection,
       }}
     >
       {props.children}
