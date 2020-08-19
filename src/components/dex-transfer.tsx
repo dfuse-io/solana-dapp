@@ -47,7 +47,7 @@ export const DexTransfer: React.FC = () => {
   const { accounts, connection, signTransaction } = useSolana()
   const classes = useStyles()
 
-  const [payers, setPayers] = useState<string[]>()
+  const [_payers, setPayers] = useState<string[]>()
 
   const [owner, setOwner] = useState("")
   const [payer, setPayer] = useState("")
@@ -95,7 +95,7 @@ export const DexTransfer: React.FC = () => {
 
 
   const handlePlaceOrder = () => {
-    if ((owner == undefined) || (payer == undefined)) {
+    if ((owner === undefined) || (payer === undefined)) {
       return
     }
     const ownerKey = new PublicKey(owner)
