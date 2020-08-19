@@ -61,11 +61,15 @@ export const DexTransfer: React.FC = () => {
 
   useEffect(() => {
     console.log("loading market")
-    let marketAddress = new PublicKey("9jghpuDjUjKe6s1sX6kukuNcWAcHFD4cRzApF7UQTCuW");
+    // let marketAddress = new PublicKey("9jghpuDjUjKe6s1sX6kukuNcWAcHFD4cRzApF7UQTCuW");
+    let marketAddress = new PublicKey("3ZE2ei22iLgivkeLZkmNVcTx3zPfkN7ALLx5MdeEJ2ss");
     if (connection) {
+
       Market.load(connection, marketAddress).then(m => {
         console.log("setting market")
         setMarket(m)
+      }).catch(e => {
+        console.log("pouf!:", e)
       })
     }
   }, [connection])
@@ -109,6 +113,7 @@ export const DexTransfer: React.FC = () => {
   }
 
   const placeOrder = async(ownerKey: PublicKey, payerKey: PublicKey) => {
+    console.log("placing order with ownerKey:", ownerKey, " payerKey:", payerKey, connection != undefined, market != undefined)
     if (!connection || !market) {
       return
     }
@@ -190,12 +195,20 @@ export const DexTransfer: React.FC = () => {
             <Typography variant={"body1"}>{market?market.address.toBase58():""}</Typography>
             <Divider/>
             <br/>
-            <Typography variant={"subtitle1"}>quoted Mint:</Typography>
+            <Typography variant={"subtitle1"}>Quoted Mint:</Typography>
             <Typography variant={"body1"}>{market?market.quoteMintAddress.toBase58():""}</Typography>
             <Divider/>
             <br/>
-            <Typography variant={"subtitle1"}>base Mint:</Typography>
+            <Typography variant={"subtitle1"}>Base Mint:</Typography>
             <Typography variant={"body1"}>{market?market.baseMintAddress.toBase58():""}</Typography>
+            <Divider/>
+            <br/>
+            <Typography variant={"subtitle1"}>Minimal Order Size:</Typography>
+            <Typography variant={"body1"}>{market?market.minOrderSize:""}</Typography>
+            <Divider/>
+            <br/>
+            <Typography variant={"subtitle1"}>Tick Size:</Typography>
+            <Typography variant={"body1"}>{market?market.tickSize:""}</Typography>
             <Divider/>
           </Grid>
           <Grid item xs={6} className={classes.section}>
@@ -275,7 +288,8 @@ export const DexTransfer: React.FC = () => {
             </Grid>
           </Grid>
           <Grid item xs={6} className={classes.section}>
-            <DexOrderList market={market} owner={owner}/>
+            {/*<DexOrderList market={market} owner={owner}/>*/}
+            <DexOrderList market={market} owner="9Pb9WquJmk2ZUHkbgnPYLMZBbR1sjFAPgB8LXr4VoieE"/>
           </Grid>
         </Grid>
       </CardContent>
