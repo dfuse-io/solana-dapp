@@ -32,7 +32,7 @@ const HomePageBase: React.FC = () => {
       return (
         <Box my={4} display="flex" flexDirection="column" alignItems="center">
           <Button variant="contained" color="primary" onClick={handleConnectClick}>
-            Connect to wallet
+            Connect to Wallet
           </Button>
         </Box>
       )
@@ -40,6 +40,9 @@ const HomePageBase: React.FC = () => {
       return (
         <Box my={4} display="flex" flexDirection="column" alignItems="center">
           <Alert severity="warning">Solana wallet is locked!</Alert>
+          <Button variant="contained" color="primary" onClick={handleConnectClick}>
+            Unlock Wallet
+          </Button>
         </Box>
       )
     case "unlocked":
@@ -53,9 +56,11 @@ const HomePageBase: React.FC = () => {
           </Box>
         )
       }
+    case "authorized":
+    default:
       return (
         <Box my={4} display="flex" flexDirection="column" alignItems="center">
-          <TransferPage />
+          <TransferPage/>
         </Box>
       )
   }
