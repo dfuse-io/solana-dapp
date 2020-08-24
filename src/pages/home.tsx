@@ -56,7 +56,6 @@ const HomePageBase: React.FC = () => {
           </Box>
         )
       }
-    case "authorized":
     default:
       return (
         <Box my={4} display="flex" flexDirection="column" alignItems="center">

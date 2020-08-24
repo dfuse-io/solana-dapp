@@ -23,7 +23,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
   const onStateChanged = (state: WalletState) => {
     console.log("dapp onStateChanged:", state)
     setState(state)
-    if (state.state === "authorized") {
+    if (state.state === "unlocked") {
       requestCluster()
     }
   }
@@ -33,7 +33,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     if (cluster) {
       setNetwork(cluster)
       setConnection(new Connection(cluster.endpoint))
-      requestAccounts()
+      // requestAccounts()
     }
   }
 
