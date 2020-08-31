@@ -17,6 +17,6 @@ export type WalletActions =
   | "wallet_getState"
 
 export type WalletState = {
-  state: "locked" | "unlocked" | "uninitialized" | "authorized"
+  state: "locked" | "unlocked" | "uninitialized"
 }
 
