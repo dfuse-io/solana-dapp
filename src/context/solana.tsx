@@ -33,7 +33,6 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     if (cluster) {
       setNetwork(cluster)
       setConnection(new Connection(cluster.endpoint))
-      requestAccounts()
     }
   }
 

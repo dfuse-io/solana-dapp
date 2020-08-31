@@ -227,11 +227,11 @@ export const DexTransfer: React.FC = () => {
             <Divider />
             <br />
             <Typography variant={"subtitle1"}>Minimal Order Size:</Typography>
-            <Typography variant={"body1"}>{market ? market.minOrderSize : ""}</Typography>
+            {/*<Typography variant={"body1"}>{market ? market.minOrderSize : ""}</Typography>*/}
             <Divider />
             <br />
             <Typography variant={"subtitle1"}>Tick Size:</Typography>
-            <Typography variant={"body1"}>{market ? market.tickSize : ""}</Typography>
+            {/*<Typography variant={"body1"}>{market ? market.tickSize : ""}</Typography>*/}
             <Divider />
           </Grid>
           <Grid item xs={6} className={classes.section}>
