@@ -14,6 +14,7 @@ export const SPLTransfer: React.FC = () => {
   const [keys, setKeys] = useState<string[]>([])
 
   const getOwnedAccounts = (accountKey: string, conn: Connection) => {
+    console.log("fetching owned accounts for:", accountKey)
     const publicKey = new PublicKey(accountKey)
     conn.getTokenAccountsByOwner(publicKey, {
       programId: TOKEN_PROGRAM_ID,
@@ -23,7 +24,7 @@ export const SPLTransfer: React.FC = () => {
       })
       setKeys(k)
     }).catch(err => {
-      console.log("Unable to retrieve owner account")
+      console.log("Unable to retrieve owner account:", err)
     })
   }
 
@@ -36,7 +37,7 @@ export const SPLTransfer: React.FC = () => {
 
   useEffect(() => {
     if (accounts){
-      setOwner(accounts[0])
+      setOwner(accounts[2])
     }
 
   }, [accounts])
