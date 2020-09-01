@@ -2,7 +2,6 @@ import React from "react"
 import { Tab, Tabs, AppBar, Theme } from "@material-ui/core"
 import { SolTransfer } from "../components/sol-transfer"
 import { SPLTransfer } from "../components/spl-transfer"
-import { DexTransfer } from "../components/dex-transfer"
 import { makeStyles } from "@material-ui/core/styles"
 
 interface TabPanelProps {
@@ -64,7 +63,6 @@ const TransferPageBase: React.FC = () => {
         >
           <Tab label="SOL Transfer" {...a11yProps(0)} />
           <Tab label="SPL Transfer" {...a11yProps(1)} />
-          <Tab label="Dex Order" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -72,9 +70,6 @@ const TransferPageBase: React.FC = () => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <SPLTransfer/>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <DexTransfer/>
       </TabPanel>
     </div>
   )

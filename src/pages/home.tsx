@@ -8,7 +8,7 @@ import Alert from "@material-ui/lab/Alert"
 const HomePageBase: React.FC = () => {
   const { state, accounts, requestAccounts } = useSolana()
   const handleConnectClick = () => {
-    requestAccounts()
+    requestAccounts(true)
       .then((accounts) => {
         console.log("got accounts:", accounts)
       })

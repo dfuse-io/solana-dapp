@@ -5,10 +5,24 @@ import { Buffer } from "buffer"
 import { GenericTransfer } from "./generic-transfer"
 // @ts-ignore FIXME We need to add a mock definition of this library to the overall project
 import BufferLayout from "buffer-layout"
+import { Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
 
-export const TOKEN_PROGRAM_ID = new PublicKey("TokenSVp5gheXUvJ6jGWGeCsgPKgnE3YgdGKRVCMY9o")
+export const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
+
+const useStyles = makeStyles((theme) => ({
+  form: {
+    marginTop: "10px"
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120
+  },
+}))
+
 
 export const SPLTransfer: React.FC = () => {
+  const classes = useStyles()
   const { accounts, connection } = useSolana()
   const [owner, setOwner] = useState<string>()
   const [keys, setKeys] = useState<string[]>([])
@@ -35,12 +49,12 @@ export const SPLTransfer: React.FC = () => {
   }, [owner, connection])
 
 
-  useEffect(() => {
-    if (accounts){
-      setOwner(accounts[2])
-    }
-
-  }, [accounts])
+  // useEffect(() => {
+  //   if (owner){
+  //     setOwner(accounts[2])
+  //   }
+  //
+  // }, [owner])
 
   const getSigner = (from: string, to: string):string => {
     return owner || from
@@ -98,11 +112,31 @@ export const SPLTransfer: React.FC = () => {
   return (
     <>
       <h3>SPL Transfer</h3>
-      <GenericTransfer
-        froms={keys}
-        createTransaction={createTransaction}
-        getSigner={getSigner}
-      />
+      <Card>
+        <Grid container spacing={3}>
+          <Grid item xs={6} >
+            <FormControl className={classes.formControl} fullWidth={true}>
+              <InputLabel>Select am owner</InputLabel>
+              <Select
+                value={owner}
+                onChange={(e) => {setOwner(e.target.value as string)}}
+              >
+                {accounts.map(account => {
+                  return (<MenuItem key={`account-${account}`} value={account}>{account}</MenuItem>)
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} >
+            <GenericTransfer
+              froms={keys}
+              createTransaction={createTransaction}
+              getSigner={getSigner}
+            />
+          </Grid>
+        </Grid>
+      </Card>
+
     </>
 
   )

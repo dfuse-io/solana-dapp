@@ -3,7 +3,7 @@ import { Network, WalletActions, WalletState } from "../types"
 import { Connection } from "@solana/web3.js"
 
 interface SolanaContextType {
-  requestAccounts: () => Promise<string[]>
+  requestAccounts: (promptAuthorization: boolean) => Promise<string[]>
   signTransaction: (message: string, signers: string[]) => Promise<any>
   connection: Connection | undefined
   state: WalletState | undefined
@@ -33,6 +33,7 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     if (cluster) {
       setNetwork(cluster)
       setConnection(new Connection(cluster.endpoint))
+      requestAccounts(false)
     }
   }
 
@@ -72,9 +73,11 @@ export function SolanaProvider(props: React.PropsWithChildren<{}>) {
     })
   }
 
-  const requestAccounts = (): Promise<string[]> => {
+  const requestAccounts = (promptAuthorization: boolean): Promise<string[]> => {
     return new Promise<string[]>(function (resolve, reject) {
-      request("wallet_requestAccounts", {})
+      request("wallet_requestAccounts", {
+        promptAuthorization: promptAuthorization,
+      })
         .then((resp) => {
           const accounts = resp.result.accounts
           onAccountChange(accounts)
